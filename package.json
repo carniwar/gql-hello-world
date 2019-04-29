@@ -1,0 +1,27 @@
+{
+  "name": "gql-hello-world",
+  "version": "1.0.0",
+  "description": "Simple project to try GraphQL with NodeJS backend",
+  "author": "github.com/carniwar",
+  "license": "ISC",
+  "main": "src/index.js",
+  "dependencies": {
+    "express": "^4.16.4",
+    "express-graphql": "^0.8.0",
+    "graphql": "^14.2.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.4.4",
+    "nodemon": "^1.18.11"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --exec babel-node src/index.js",
+    "clean": "rm -rf dist",
+    "build": "npm run-script clean && babel src --out-dir dist",
+    "serve": "npm run-script build && node dist/index.js"
+  }
+}
