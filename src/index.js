@@ -3,6 +3,7 @@ import graphqlHTTP from 'express-graphql';
 import {buildSchema} from 'graphql';
 
 // curl -X POST -H "Content-Type: application/json" -d '{"query": "query personById($personId: Int!) { personById(id: $personId) {id,name} }", "variables": { "personId": 1 } }' http://localhost:4000/force
+// curl -X POST -H "Content-Type: application/json" -d '{"query": "mutation UpdatePerson($person: PersonUpdate) {updatePerson(person: $person) {id,name}}", "variables": { "person": {"id": 3, "name": "Emperor" } } }' http://localhost:4000/force
 
 const schema = buildSchema(`
     type Query {
@@ -17,6 +18,15 @@ const schema = buildSchema(`
         name: String
         age: Int
         father: Person
+    },
+    
+    type Mutation {
+        updatePerson(person: PersonUpdate): Person
+    }
+    input PersonUpdate {
+        id: Int!
+        name: String!
+        email: String
     }
 `);
 
@@ -50,7 +60,8 @@ class Person {
 
     update(name, email) {
         this.name = name;
-        this.email = email;
+        if (email)
+            this.email = email;
     }
 
 }
@@ -59,9 +70,16 @@ const personById = ({id}) => {
     return people.filter(person => person.id == id)[0];
 };
 
+const updatePerson = ({person}) => {
+    let personDB = personById({'id': person.id});
+    personDB.update(person.name, person.email);
+    return personDB;
+};
+
 const root = {
     message: () => 'Hello World!',
     personById: personById,
+    updatePerson: updatePerson,
     random: random,
     quoteOfTheDay: () => random() < 0.5 ? 'Take it easy' : 'Salvation lies within',
     rollDice: rollDice,
